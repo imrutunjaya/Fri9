@@ -156,58 +156,67 @@
   nav.breadcrumbs span.separator {
     margin: 0 0.3rem; user-select: none;
   }
-  .pull-line {
-    position: fixed; top: 61px; left: 50%; transform: translateX(-50%);
-    width: 60px; height: 4px; border-radius: 3px;
+  .mini-line {
+    width: 64px;
+    height: 4px;
     background-color: var(--line-color);
-    cursor: pointer; user-select: none; z-index: 10001;
-    transition: background-color 0.3s ease;
+    border-radius: 3px;
+    margin: 12px auto 10px;
+    cursor: pointer;
+    position: relative;
+    transition: width 0.4s ease, background-color 0.4s ease;
   }
-  .pull-line.active {
+  .mini-line.expanded {
+    width: 180px;
     background-color: var(--blue-active);
   }
-  .pull-line::after {
-    content: '';
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%) rotate(0deg);
-    border: solid var(--line-color);
-    border-width: 0 2px 2px 0;
-    display: inline-block; padding: 6px;
-    transition: transform 0.3s ease, border-color 0.3s ease;
-  }
-  .pull-line.active::after {
-    transform: translate(-50%, -50%) rotate(180deg);
-    border-color: var(--blue-active);
-  }
   .pulldown-menu {
-    position: fixed; top: 65px; left: 50%; transform: translateX(-50%);
-    width: fit-content; padding: 12px 20px;
+    position: fixed;
+    top: 99px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: fit-content;
+    padding: 12px 20px;
     background-color: var(--bar-background);
     border: 1px solid var(--bar-border);
     border-radius: 12px;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-    opacity: 0; pointer-events: none; max-height: 0; overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+    max-height: 0;
+    overflow: hidden;
     transition: max-height 0.4s ease, opacity 0.4s ease, padding 0.4s ease;
-    display: flex; gap: 24px; z-index: 10001;
+    display: flex;
+    gap: 24px;
+    z-index: 10001;
   }
-  .pulldown-menu.open {
-    pointer-events: auto; opacity: 1; max-height: 220px; padding: 12px 20px;
+  .pulldown-menu.visible {
+    pointer-events: auto;
+    opacity: 1;
+    max-height: 220px;
+    padding: 12px 20px;
   }
   .menu-icon-button {
     background: transparent;
-    display: flex; flex-direction: column; align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     color: var(--line-color);
     cursor: pointer;
-    font-size: 0.85rem; font-weight: 600;
-    transition: color 0.3s ease; user-select: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: color 0.3s ease;
+    user-select: none;
     width: 84px;
   }
   .menu-icon-button svg {
     stroke: var(--line-color);
-    width: 28px; height: 28px; stroke-width: 2; fill: none;
+    width: 28px;
+    height: 28px;
+    stroke-width: 2;
+    fill: none;
     margin-bottom: 6px;
     transition: stroke 0.3s ease;
   }
@@ -223,9 +232,13 @@
   }
   footer {
     background: transparent;
-    position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%);
+    position: fixed;
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%);
     padding: 6px 36px;
-    z-index: 1000; width: auto;
+    z-index: 1000;
+    width: auto;
     user-select: none;
   }
   .bottom-nav {
@@ -241,7 +254,8 @@
     justify-content: center;
   }
   .bottom-nav button {
-    background: none; border: none;
+    background: none;
+    border: none;
     color: var(--line-color);
     font-size: 0.78rem;
     display: flex;
@@ -264,6 +278,7 @@
     stroke-width: 1.3;
     fill: none;
     transition: stroke 0.25s ease, transform 0.25s ease;
+    filter: drop-shadow(0 1px 0 rgba(0,0,0,0.15));
   }
   .bottom-nav button:hover, .bottom-nav button:focus {
     color: var(--blue-active);
@@ -274,6 +289,7 @@
   .bottom-nav button:hover svg, .bottom-nav button:focus svg {
     stroke: var(--blue-active);
     transform: scale(1.1);
+    filter: none;
   }
   .bottom-nav button.active {
     color: var(--blue-active);
@@ -281,6 +297,7 @@
   .bottom-nav button.active svg {
     stroke: var(--blue-active);
     transform: scale(1.15);
+    filter: none;
   }
   .bottom-nav button.active::after {
     content: '';
@@ -304,18 +321,40 @@
     border-radius: 3px;
   }
   @media (max-width: 480px) {
-    #intro { font-size: 2rem; letter-spacing: 0.05em; }
-    .logo { font-size: 1.1rem; }
-    nav.breadcrumbs { font-size: 0.8rem; }
-    .menu-icon-button { width: 70px; font-size: 0.78rem; }
-    .menu-icon-button svg { width: 22px; height: 22px; }
-    .bottom-nav button { font-size: 0.68rem; gap: 3px; }
-    .bottom-nav button svg { width: 24px; height: 24px; }
-    footer { bottom: 12px; padding: 6px 24px; }
+    #intro {
+      font-size: 2rem;
+      letter-spacing: 0.05em;
+    }
+    .logo {
+      font-size: 1.1rem;
+    }
+    nav.breadcrumbs {
+      font-size: 0.8rem;
+    }
+    .menu-icon-button {
+      width: 70px;
+      font-size: 0.78rem;
+    }
+    .menu-icon-button svg {
+      width: 22px;
+      height: 22px;
+    }
+    .bottom-nav button {
+      font-size: 0.68rem;
+      gap: 3px;
+    }
+    .bottom-nav button svg {
+      width: 24px;
+      height: 24px;
+    }
+    footer {
+      bottom: 12px;
+      padding: 6px 24px;
+    }
   }
   main {
     flex: 1;
-    padding: 4.8rem 2rem 6.5rem; /* Add space for fixed header/footer */
+    padding: 4.8rem 2rem 6.5rem;
     max-width: 1200px;
     margin: 0 auto;
     overflow-y: auto;
@@ -336,10 +375,13 @@
   .tab-content.active {
     display: block;
   }
-
   @keyframes fadeIn {
-    from {opacity: 0;}
-    to {opacity: 1;}
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   /* Home tab styling - compact dashboard */
@@ -430,7 +472,10 @@
   /* Modal styles */
   #modalOverlay {
     position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background-color: rgba(0,0,0,0.75);
     display: none;
     align-items: center;
@@ -487,9 +532,9 @@
         <div class="topbar-main-row">
           <div class="logo" aria-label="Site Logo" role="button" tabindex="0" title="Toggle Theme">
             <svg viewBox="0 0 64 64" role="img" aria-hidden="true" focusable="false">
-              <circle cx="32" cy="32" r="30" />
-              <line x1="16" y1="48" x2="48" y2="16" />
-              <line x1="16" y1="16" x2="48" y2="48" />
+              <circle cx="32" cy="32" r="30"></circle>
+              <line x1="16" y1="48" x2="48" y2="16"></line>
+              <line x1="16" y1="16" x2="48" y2="48"></line>
             </svg>
             LineLogo
           </div>
@@ -499,27 +544,27 @@
             <a href="#" aria-current="page">Dashboard</a>
           </nav>
         </div>
-        <div class="pull-line" id="pullLine" role="button" tabindex="0" aria-label="Toggle Menu" aria-pressed="false"></div>
+        <div class="mini-line" id="miniLine" role="button" tabindex="0" aria-label="Toggle Menu" aria-pressed="false"></div>
         <div class="pulldown-menu" id="pulldownMenu" aria-label="Expanded Menu" aria-hidden="true">
           <div class="menu-icon-button" tabindex="0" role="button" aria-label="Previous Year Questions Books">
             <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path d="M4 6h16M4 12h16M4 18h16"/>
-              <rect x="2" y="4" width="20" height="16" rx="2" ry="2" />
+              <path d="M4 6h16M4 12h16M4 18h16"></path>
+              <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
             </svg>
             <span>PYQ Books</span>
           </div>
           <div class="menu-icon-button" tabindex="0" role="button" aria-label="Upcoming Exams">
             <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
-              <line x1="12" y1="6" x2="12" y2="12" stroke="currentColor" stroke-width="2" />
-              <line x1="12" y1="12" x2="16" y2="14" stroke="currentColor" stroke-width="2" />
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"></circle>
+              <line x1="12" y1="6" x2="12" y2="12" stroke="currentColor" stroke-width="2"></line>
+              <line x1="12" y1="12" x2="16" y2="14" stroke="currentColor" stroke-width="2"></line>
             </svg>
             <span>Exams</span>
           </div>
           <div class="menu-icon-button" tabindex="0" role="button" aria-label="Study Materials">
             <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <rect x="4" y="4" width="16" height="16" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/>
-              <path d="M8 8h8v8H8z" stroke="currentColor" stroke-width="2" fill="none"/>
+              <rect x="4" y="4" width="16" height="16" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"></rect>
+              <path d="M8 8h8v8H8z" stroke="currentColor" stroke-width="2" fill="none"></path>
             </svg>
             <span>Materials</span>
           </div>
@@ -527,29 +572,31 @@
       </div>
     </header>
     <main>
-      <!-- Home Content -->
-      <section class="tab-content active" id="homeTab" aria-label="Home Dashboard">
+      <!-- Home Tab -->
+      <section class="tab-content active" id="homeTab" aria-label="Home Dashboard Overview">
         <div class="dashboard-widgets">
-          <div class="widget" tabindex="0" aria-label="Quick Stats">
-            <h3>Quick Stats</h3>
-            <p>Users: <strong>12,845</strong></p>
-            <p>Exams Taken: <strong>5,234</strong></p>
+          <div class="widget" tabindex="0" aria-label="User Overview">
+            <h3>User Overview</h3>
+            <p>Total registered users: <strong>12,845</strong></p>
+            <p>Active users this month: <strong>3,210</strong></p>
           </div>
-          <div class="widget" tabindex="0" aria-label="Recent Activities">
-            <h3>Recent Activities</h3>
-            <p>New study materials added, upcoming exam registration now open.</p>
+          <div class="widget" tabindex="0" aria-label="Exam Stats">
+            <h3>Exam Stats</h3>
+            <p>Exams conducted this year: <strong>18</strong></p>
+            <p>Upcoming exams: <strong>4</strong></p>
           </div>
-          <div class="widget" tabindex="0" aria-label="Tips">
-            <h3>Study Tips</h3>
-            <p>Practice past year papers to boost exam confidence.</p>
+          <div class="widget" tabindex="0" aria-label="Material Downloads">
+            <h3>Material Downloads</h3>
+            <p>Downloads this month: <strong>9,456</strong></p>
+            <p>Most popular: <strong>Mathematics PYQ</strong></p>
           </div>
         </div>
       </section>
 
-      <!-- Browse Content -->
+      <!-- Browse Tab -->
       <section class="tab-content" id="browseTab" aria-label="Browse Resources">
-        <ul class="content-list" tabindex="0" role="list" aria-label="Browse topics list">
-          <li tabindex="0" role="button" data-title="Mathematics PYQ Book" data-description="Contains previous year questions for Mathematics with detailed solutions spanning from 2010 to 2023."> 
+        <ul class="content-list" tabindex="0" role="list" aria-label="Topics List">
+          <li tabindex="0" role="button" data-title="Mathematics PYQ Book" data-description="Contains previous year questions for Mathematics with detailed solutions spanning from 2010 to 2023.">
             <h4>Mathematics PYQ Book</h4>
             <p>Previous year questions for Mathematics with answers.</p>
           </li>
@@ -568,7 +615,7 @@
         </ul>
       </section>
 
-      <!-- Notifications Content -->
+      <!-- Notifications Tab -->
       <section class="tab-content" id="notificationsTab" aria-label="Notifications">
         <div class="notifs-list">
           <article class="notif-item" tabindex="0" role="article" aria-label="Exam date announced notification">
@@ -590,28 +637,28 @@
       <nav class="bottom-nav" aria-label="Primary">
         <button type="button" aria-current="page" class="active" aria-label="Home" data-tab="homeTab">
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path d="M3 12 L12 3 L21 12 L21 21 L3 21 Z" />
+            <path d="M3 12 L12 3 L21 12 L21 21 L3 21 Z"></path>
           </svg>
           Home
         </button>
         <button type="button" aria-label="Browse" data-tab="browseTab">
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <circle cx="11" cy="11" r="7" />
-            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            <circle cx="11" cy="11" r="7"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
           Browse
         </button>
         <button type="button" aria-label="Notification" data-tab="notificationsTab">
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path d="M12 22c1.1 0 1.99-.9 1.99-2H10c0 1.1.9 2 2 2zM18 16v-5c0-3.07-1.63-5.64-4.5-6.32V4a1.5 1.5 0 0 0-3 0v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+            <path d="M12 22c1.1 0 1.99-.9 1.99-2H10c0 1.1.9 2 2 2zM18 16v-5c0-3.07-1.63-5.64-4.5-6.32V4a1.5 1.5 0 0 0-3 0v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"></path>
           </svg>
           Notification
         </button>
       </nav>
     </footer>
   </div>
-<!-- Modal Structure -->
-  <div id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDesc" tabindex="-1">
+
+<div id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDesc" tabindex="-1">
     <div id="modalContent">
       <button id="modalClose" aria-label="Close modal">&times;</button>
       <h3 id="modalTitle"></h3>
@@ -619,133 +666,129 @@
     </div>
   </div>
 
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const intro = document.getElementById('intro');
-    const siteContainer = document.getElementById('site-container');
-    const pullLine = document.getElementById('pullLine');
-    const menu = document.getElementById('pulldownMenu');
-    const logo = document.querySelector('.logo');
-    const body = document.body;
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const intro = document.getElementById('intro');
+      const siteContainer = document.getElementById('site-container');
+      const miniLine = document.getElementById('miniLine');
+      const pulldownMenu = document.getElementById('pulldownMenu');
+      const logo = document.querySelector('.logo');
+      const body = document.body;
 
-    setTimeout(() => {
-      intro.querySelector('.typing-text').classList.add('typing-done');
-    }, 3100);
+      setTimeout(() => {
+        intro.querySelector('.typing-text').classList.add('typing-done');
+      }, 3100);
 
-    setTimeout(() => {
-      intro.classList.add('hidden');
-      siteContainer.classList.add('visible');
-      siteContainer.setAttribute('aria-hidden', 'false');
-    }, 5000);
+      setTimeout(() => {
+        intro.classList.add('hidden');
+        siteContainer.classList.add('visible');
+        siteContainer.setAttribute('aria-hidden', 'false');
+      }, 5000);
 
-    pullLine.addEventListener('click', () => {
-      const isOpen = menu.classList.toggle('open');
-      pullLine.classList.toggle('active', isOpen);
-      menu.setAttribute('aria-hidden', !isOpen);
-    });
-    pullLine.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        pullLine.click();
-      }
-    });
+      miniLine.addEventListener('click', () => {
+        const expanded = pulldownMenu.classList.toggle('visible');
+        miniLine.classList.toggle('expanded', expanded);
+      });
 
-    document.addEventListener('click', e => {
-      if (
-        !pullLine.contains(e.target) &&
-        !menu.contains(e.target) &&
-        menu.classList.contains('open')
-      ) {
-        menu.classList.remove('open');
-        pullLine.classList.remove('active');
-        menu.setAttribute('aria-hidden', 'true');
-      }
-    });
+      miniLine.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          miniLine.click();
+        }
+      });
 
-    logo.addEventListener('click', () => {
-      body.classList.toggle('white-theme');
-    });
-    logo.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
+      document.addEventListener('click', e => {
+        if (
+          !miniLine.contains(e.target) &&
+          !pulldownMenu.contains(e.target) &&
+          pulldownMenu.classList.contains('visible')
+        ) {
+          pulldownMenu.classList.remove('visible');
+          miniLine.classList.remove('expanded');
+        }
+      });
+
+      logo.addEventListener('click', () => {
         body.classList.toggle('white-theme');
-      }
-    });
+      });
+      logo.addEventListener('keydown', e => {
+        if(e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          body.classList.toggle('white-theme');
+        }
+      });
 
-    // Tab switching
-    const bottomNavButtons = document.querySelectorAll('.bottom-nav button');
-    const tabContents = document.querySelectorAll('.tab-content');
-    bottomNavButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        bottomNavButtons.forEach(b => {
-          b.classList.remove('active');
-          b.removeAttribute('aria-current');
+      const bottomNavButtons = document.querySelectorAll('.bottom-nav button');
+      const tabContents = document.querySelectorAll('.tab-content');
+      bottomNavButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          bottomNavButtons.forEach(b => {
+            b.classList.remove('active');
+            b.removeAttribute('aria-current');
+          });
+          btn.classList.add('active');
+          btn.setAttribute('aria-current', 'page');
+          const targetTab = btn.getAttribute('data-tab');
+          tabContents.forEach(tc => {
+            if(tc.id === targetTab) {
+              tc.classList.add('active');
+            } else {
+              tc.classList.remove('active');
+            }
+          });
         });
-        btn.classList.add('active');
-        btn.setAttribute('aria-current', 'page');
-        const targetTab = btn.getAttribute('data-tab');
-        tabContents.forEach(tc => {
-          if(tc.id === targetTab) {
-            tc.classList.add('active');
-          } else {
-            tc.classList.remove('active');
+      });
+
+      const modalOverlay = document.getElementById('modalOverlay');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalDesc = document.getElementById('modalDesc');
+      const modalClose = document.getElementById('modalClose');
+
+      document.querySelectorAll('#browseTab ul.content-list li').forEach(item => {
+        item.addEventListener('click', () => {
+          const title = item.getAttribute('data-title');
+          const desc = item.getAttribute('data-description');
+          modalTitle.textContent = title;
+          modalDesc.textContent = desc;
+          modalOverlay.classList.add('active');
+          modalOverlay.focus();
+        });
+        item.addEventListener('keydown', e => {
+          if(e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            item.click();
+          }
+        });
+      });
+
+      modalClose.addEventListener('click', () => {
+        modalOverlay.classList.remove('active');
+      });
+
+      modalOverlay.addEventListener('click', e => {
+        if(e.target === modalOverlay){
+          modalOverlay.classList.remove('active');
+        }
+      });
+
+      document.addEventListener('keydown', e => {
+        if(e.key === 'Escape' && modalOverlay.classList.contains('active')){
+          modalOverlay.classList.remove('active');
+        }
+      });
+
+      document.querySelectorAll('.menu-icon-button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          alert(btn.getAttribute('aria-label') + ' clicked!');
+        });
+        btn.addEventListener('keydown', e => {
+          if(e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            alert(btn.getAttribute('aria-label') + ' clicked!');
           }
         });
       });
     });
-
-    // Modal handling for browse items
-    const modalOverlay = document.getElementById('modalOverlay');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalDesc = document.getElementById('modalDesc');
-    const modalClose = document.getElementById('modalClose');
-
-    document.querySelectorAll('#browseTab ul.content-list li').forEach(item => {
-      item.addEventListener('click', () => {
-        const title = item.getAttribute('data-title');
-        const desc = item.getAttribute('data-description');
-        modalTitle.textContent = title;
-        modalDesc.textContent = desc;
-        modalOverlay.classList.add('active');
-        modalOverlay.focus();
-      });
-      item.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          item.click();
-        }
-      });
-    });
-
-    modalClose.addEventListener('click', () => {
-      modalOverlay.classList.remove('active');
-    });
-
-    modalOverlay.addEventListener('click', e => {
-      if(e.target === modalOverlay){
-        modalOverlay.classList.remove('active');
-      }
-    });
-
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
-        modalOverlay.classList.remove('active');
-      }
-    });
-
-    // Accessibility on menu icons
-    document.querySelectorAll('.menu-icon-button').forEach(btn => {
-      btn.addEventListener('click', () => {
-        alert(btn.getAttribute('aria-label') + ' clicked!');
-      });
-      btn.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          alert(btn.getAttribute('aria-label') + ' clicked!');
-        }
-      });
-    });
-  });
-</script>
+  </script>
 </body>
 </html>
