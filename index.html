@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Line Theme Navigation - Multi Tab Dashboard with Modal</title>
+<title>Line Theme Navigation - Full Width & Side Panel</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
@@ -44,10 +44,10 @@
     font-family: 'Poppins', sans-serif;
     background: var(--background-color);
     color: var(--text-color);
-    overflow: hidden;
-    height: 100vh;
+    overflow-x: hidden;
     display: flex;
     flex-direction: column;
+    height: 100vh;
     transition: background-color 0.5s, color 0.5s;
   }
 
@@ -65,8 +65,6 @@
     align-items: center;
     user-select: none;
     z-index: 9999;
-    overflow: hidden;
-    transition: background-color 0.5s, color 0.5s;
   }
   #intro.hidden {
     animation: fadeOut 1s forwards;
@@ -77,7 +75,6 @@
     overflow: hidden;
     animation: typing 3s steps(20) forwards, blink 0.8s step-end infinite alternate;
     max-width: 0;
-    transition: border-color 0.5s;
   }
   #intro.typing-done .typing-text {
     border-right: none;
@@ -93,18 +90,21 @@
   @keyframes fadeOut {
     to { opacity: 0; visibility: hidden; pointer-events: none; }
   }
+
   #site-container {
     opacity: 0;
     visibility: hidden;
-    height: 100vh;
+    flex: 1;
     display: flex;
     flex-direction: column;
+    width: 100vw;
     transition: opacity 1s ease;
   }
   #site-container.visible {
     opacity: 1;
     visibility: visible;
   }
+
   header {
     position: fixed;
     top: 0; left: 0; right: 0;
@@ -114,39 +114,52 @@
     box-shadow: 0 1px 3px var(--shadow-light);
     user-select: none;
     z-index: 10000;
-    transition: background-color 0.5s, border-color 0.5s, box-shadow 0.5s;
   }
   .topbar-inner {
-    display: flex; flex-direction: column; max-width: 1200px; margin: 0 auto;
+    display: flex; flex-direction: column; max-width: 100%; margin: 0 auto;
   }
   .topbar-main-row {
-    display: flex; align-items: center; gap: 1rem;
+    display: flex; align-items: center; gap: 1rem; width: 100%;
   }
   .logo {
     display: flex; align-items: center;
-    font-weight: 700; font-size: 1.4rem;
-    color: var(--primary-color); cursor: pointer; user-select: none;
-    flex-shrink: 0; transition: color 0.5s;
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--primary-color);
+    cursor: pointer;
+    user-select: none;
+    flex-shrink: 0;
+    transition: color 0.5s;
   }
   .logo svg {
-    height: 32px; width: 32px;
+    height: 32px;
+    width: 32px;
     stroke: var(--primary-color);
-    stroke-width: 2; fill: none;
-    margin-right: 0.3rem; transition: stroke 0.5s;
+    stroke-width: 2;
+    fill: none;
+    margin-right: 0.3rem;
+    transition: stroke 0.5s;
   }
-  body.white-theme .logo, body.white-theme .logo svg {
+  body.white-theme .logo,
+  body.white-theme .logo svg {
     color: var(--primary-color);
     stroke: var(--primary-color);
   }
   nav.breadcrumbs {
-    flex: 1; font-size: 0.9rem; color: var(--line-color);
-    display: flex; align-items: center; flex-wrap: nowrap; overflow-x: auto;
-    transition: color 0.5s;
+    flex: 1;
+    font-size: 0.9rem;
+    color: var(--line-color);
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    overflow-x: auto;
   }
   nav.breadcrumbs a {
     color: var(--line-color);
-    text-decoration: none; padding: 0 0.4rem;
-    white-space: nowrap; transition: color 0.3s ease;
+    text-decoration: none;
+    padding: 0 0.4rem;
+    white-space: nowrap;
+    transition: color 0.3s ease;
     border-bottom: 1px solid transparent;
   }
   nav.breadcrumbs a:hover {
@@ -154,8 +167,10 @@
     border-bottom: 1px solid var(--blue-active);
   }
   nav.breadcrumbs span.separator {
-    margin: 0 0.3rem; user-select: none;
+    margin: 0 0.3rem;
+    user-select: none;
   }
+
   .mini-line {
     width: 64px;
     height: 4px;
@@ -170,6 +185,7 @@
     width: 180px;
     background-color: var(--blue-active);
   }
+
   .pulldown-menu {
     position: fixed;
     top: 99px;
@@ -230,16 +246,20 @@
   .menu-icon-button span {
     user-select: none;
   }
+
   footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background: transparent;
     position: fixed;
     bottom: 14px;
     left: 50%;
     transform: translateX(-50%);
-    padding: 6px 36px;
-    z-index: 1000;
-    width: auto;
+    padding: 6px 8px;
+    z-index: 10000;
     user-select: none;
+    gap: 12px;
   }
   .bottom-nav {
     background: var(--bar-background);
@@ -252,6 +272,8 @@
     gap: 48px;
     align-items: center;
     justify-content: center;
+    flex-grow: 1;
+    min-width: 0;
   }
   .bottom-nav button {
     background: none;
@@ -270,15 +292,16 @@
     letter-spacing: 0.025em;
     padding: 0;
     outline-offset: 2px;
+    min-width: 52px;
   }
   .bottom-nav button svg {
     stroke: var(--line-color);
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
     stroke-width: 1.3;
     fill: none;
     transition: stroke 0.25s ease, transform 0.25s ease;
-    filter: drop-shadow(0 1px 0 rgba(0,0,0,0.15));
+    filter: none;
   }
   .bottom-nav button:hover, .bottom-nav button:focus {
     color: var(--blue-active);
@@ -289,7 +312,6 @@
   .bottom-nav button:hover svg, .bottom-nav button:focus svg {
     stroke: var(--blue-active);
     transform: scale(1.1);
-    filter: none;
   }
   .bottom-nav button.active {
     color: var(--blue-active);
@@ -297,7 +319,6 @@
   .bottom-nav button.active svg {
     stroke: var(--blue-active);
     transform: scale(1.15);
-    filter: none;
   }
   .bottom-nav button.active::after {
     content: '';
@@ -321,41 +342,19 @@
     border-radius: 3px;
   }
   @media (max-width: 480px) {
-    #intro {
-      font-size: 2rem;
-      letter-spacing: 0.05em;
-    }
-    .logo {
-      font-size: 1.1rem;
-    }
-    nav.breadcrumbs {
-      font-size: 0.8rem;
-    }
-    .menu-icon-button {
-      width: 70px;
-      font-size: 0.78rem;
-    }
-    .menu-icon-button svg {
-      width: 22px;
-      height: 22px;
-    }
-    .bottom-nav button {
-      font-size: 0.68rem;
-      gap: 3px;
-    }
-    .bottom-nav button svg {
-      width: 24px;
-      height: 24px;
-    }
-    footer {
-      bottom: 12px;
-      padding: 6px 24px;
-    }
+    #intro { font-size: 2rem; letter-spacing: 0.05em; }
+    .logo { font-size: 1.1rem; }
+    nav.breadcrumbs { font-size: 0.8rem; }
+    .menu-icon-button { width: 70px; font-size: 0.78rem; }
+    .menu-icon-button svg { width: 22px; height: 22px; }
+    .bottom-nav button { font-size: 0.68rem; gap: 3px; }
+    .bottom-nav button svg { width: 24px; height: 24px; }
+    footer { bottom: 12px; padding: 6px 24px; }
   }
   main {
     flex: 1;
     padding: 4.8rem 2rem 6.5rem;
-    max-width: 1200px;
+    width: 100vw;
     margin: 0 auto;
     overflow-y: auto;
     background: var(--background-color);
@@ -376,12 +375,8 @@
     display: block;
   }
   @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 
   /* Home tab styling - compact dashboard */
@@ -520,15 +515,132 @@
     line-height: 1.5;
     color: var(--line-color);
   }
+
+  /* Side Panel Toggle Button */
+  #sidePanelToggle {
+    background: var(--bar-background);
+    border: 1px solid var(--bar-border);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: var(--line-color);
+    transition: color 0.3s ease, border-color 0.3s ease;
+    flex-shrink: 0;
+  }
+  #sidePanelToggle:hover, #sidePanelToggle:focus {
+    color: var(--blue-active);
+    border-color: var(--blue-active);
+    outline: none;
+  }
+  #sidePanelToggle svg {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+  }
+
+  /* Side Panel */
+  #sidePanel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 50vw;
+    max-width: 400px;
+    height: 100vh;
+    background: var(--bar-background);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: -2px 0 12px rgba(0,0,0,0.7);
+    border-left: 1px solid var(--bar-border);
+    border-radius: 12px 0 0 12px;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+    z-index: 11000;
+    display: flex;
+    flex-direction: column;
+  }
+  #sidePanel.open {
+    transform: translateX(0);
+  }
+  #sidePanel header {
+    padding: 12px 16px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    border-bottom: 1px solid var(--line-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  #sidePanel button.closeBtn {
+    background: none;
+    border: none;
+    color: var(--line-color);
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  #sidePanel button.closeBtn:hover, #sidePanel button.closeBtn:focus {
+    color: var(--blue-active);
+    outline: none;
+  }
+  #sidePanel .panel-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  #sidePanel .panel-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    color: var(--line-color);
+    transition: background 0.3s, color 0.3s;
+  }
+  #sidePanel .panel-item:hover, #sidePanel .panel-item:focus {
+    background: var(--menu-hover-bg);
+    color: var(--blue-active);
+    outline: none;
+  }
+  #sidePanel .panel-item svg {
+    width: 28px;
+    height: 28px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+    flex-shrink: 0;
+  }
+  #sidePanel .panel-item span {
+    font-weight: 600;
+    user-select: none;
+  }
+  @media (max-width: 768px) {
+    #sidePanel {
+      width: 80vw;
+      max-width: none;
+    }
+  }
 </style>
 </head>
 <body>
   <section id="intro" aria-label="Introduction">
     <div class="typing-text" aria-live="polite" aria-atomic="true">Welcome to Study Dashboard</div>
   </section>
+
   <div id="site-container" aria-hidden="true">
     <header role="banner" aria-label="Top Navigation Bar">
-      <div class="topbar-inner" style="position: relative;">
+      <div class="topbar-inner">
         <div class="topbar-main-row">
           <div class="logo" aria-label="Site Logo" role="button" tabindex="0" title="Toggle Theme">
             <svg viewBox="0 0 64 64" role="img" aria-hidden="true" focusable="false">
@@ -571,8 +683,8 @@
         </div>
       </div>
     </header>
+
     <main>
-      <!-- Home Tab -->
       <section class="tab-content active" id="homeTab" aria-label="Home Dashboard Overview">
         <div class="dashboard-widgets">
           <div class="widget" tabindex="0" aria-label="User Overview">
@@ -593,7 +705,6 @@
         </div>
       </section>
 
-      <!-- Browse Tab -->
       <section class="tab-content" id="browseTab" aria-label="Browse Resources">
         <ul class="content-list" tabindex="0" role="list" aria-label="Topics List">
           <li tabindex="0" role="button" data-title="Mathematics PYQ Book" data-description="Contains previous year questions for Mathematics with detailed solutions spanning from 2010 to 2023.">
@@ -613,9 +724,8 @@
             <p>Interactive video lectures for Calculus study.</p>
           </li>
         </ul>
-      </section>
+   </section>
 
-      <!-- Notifications Tab -->
       <section class="tab-content" id="notificationsTab" aria-label="Notifications">
         <div class="notifs-list">
           <article class="notif-item" tabindex="0" role="article" aria-label="Exam date announced notification">
@@ -633,32 +743,74 @@
         </div>
       </section>
     </main>
+
     <footer role="contentinfo" aria-label="Bottom Navigation Bar">
-      <nav class="bottom-nav" aria-label="Primary">
-        <button type="button" aria-current="page" class="active" aria-label="Home" data-tab="homeTab">
-          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path d="M3 12 L12 3 L21 12 L21 21 L3 21 Z"></path>
+      <nav style="display:flex;align-items:center;gap:12px;">
+        <div class="bottom-nav" aria-label="Primary">
+          <button type="button" aria-current="page" class="active" aria-label="Home" data-tab="homeTab">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M3 12 L12 3 L21 12 L21 21 L3 21 Z"></path>
+            </svg>
+            Home
+          </button>
+          <button type="button" aria-label="Browse" data-tab="browseTab">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="11" cy="11" r="7"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            Browse
+          </button>
+          <button type="button" aria-label="Notification" data-tab="notificationsTab">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M12 22c1.1 0 1.99-.9 1.99-2H10c0 1.1.9 2 2 2zM18 16v-5c0-3.07-1.63-5.64-4.5-6.32V4a1.5 1.5 0 0 0-3 0v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"></path>
+            </svg>
+            Notification
+          </button>
+        </div>
+        <button id="sidePanelToggle" aria-label="Open side panel" title="Open side panel" tabindex="0" aria-expanded="false">
+          <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24">
+            <rect x="4" y="4" width="16" height="16" rx="3" ry="3" stroke="currentColor" stroke-width="2" fill="none"></rect>
+            <line x1="9" y1="9" x2="15" y2="15" stroke="currentColor" stroke-width="2"></line>
+            <line x1="15" y1="9" x2="9" y2="15" stroke="currentColor" stroke-width="2"></line>
           </svg>
-          Home
-        </button>
-        <button type="button" aria-label="Browse" data-tab="browseTab">
-          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <circle cx="11" cy="11" r="7"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-          Browse
-        </button>
-        <button type="button" aria-label="Notification" data-tab="notificationsTab">
-          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path d="M12 22c1.1 0 1.99-.9 1.99-2H10c0 1.1.9 2 2 2zM18 16v-5c0-3.07-1.63-5.64-4.5-6.32V4a1.5 1.5 0 0 0-3 0v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"></path>
-          </svg>
-          Notification
         </button>
       </nav>
     </footer>
   </div>
 
-<div id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDesc" tabindex="-1">
+  <div id="sidePanel" aria-label="Side Panel" role="complementary" aria-hidden="true">
+    <header>
+      <span>Quick Access</span>
+      <button class="closeBtn" aria-label="Close side panel">&times;</button>
+    </header>
+    <div class="panel-content" role="list">
+      <div class="panel-item" tabindex="0" role="listitem" aria-label="Dashboard">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+        </svg>
+        <span>Dashboard</span>
+      </div>
+      <div class="panel-item" tabindex="0" role="listitem" aria-label="Settings">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l0 0a2 2 0 0 1-2.83 2.83l0 0a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v0a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l0 0a2 2 0 0 1-2.83-2.83l0 0a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h0a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l0 0a2 2 0 0 1 2.83-2.83l0 0a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v0a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l0 0a2 2 0 0 1 2.83 2.83l0 0a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h0a1.65 1.65 0 0 0-1.6 1z"></path>
+        </svg>
+        <span>Settings</span>
+      </div>
+      <div class="panel-item" tabindex="0" role="listitem" aria-label="Profile">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="12" cy="7" r="4"></circle>
+          <path d="M5.5 21a7.5 7.5 0 0 1 13 0"></path>
+        </svg>
+        <span>Profile</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDesc" tabindex="-1">
     <div id="modalContent">
       <button id="modalClose" aria-label="Close modal">&times;</button>
       <h3 id="modalTitle"></h3>
@@ -666,129 +818,148 @@
     </div>
   </div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const intro = document.getElementById('intro');
-      const siteContainer = document.getElementById('site-container');
-      const miniLine = document.getElementById('miniLine');
-      const pulldownMenu = document.getElementById('pulldownMenu');
-      const logo = document.querySelector('.logo');
-      const body = document.body;
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const intro = document.getElementById('intro');
+    const siteContainer = document.getElementById('site-container');
+    const miniLine = document.getElementById('miniLine');
+    const pulldownMenu = document.getElementById('pulldownMenu');
+    const logo = document.querySelector('.logo');
+    const body = document.body;
+    const sidePanelToggle = document.getElementById('sidePanelToggle');
+    const sidePanel = document.getElementById('sidePanel');
+    const sidePanelClose = sidePanel.querySelector('.closeBtn');
+    const bottomNavButtons = document.querySelectorAll('.bottom-nav button');
+    const tabContents = document.querySelectorAll('.tab-content');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDesc = document.getElementById('modalDesc');
+    const modalClose = document.getElementById('modalClose');
 
-      setTimeout(() => {
-        intro.querySelector('.typing-text').classList.add('typing-done');
-      }, 3100);
+    setTimeout(() => {
+      intro.querySelector('.typing-text').classList.add('typing-done');
+    }, 3100);
 
-      setTimeout(() => {
-        intro.classList.add('hidden');
-        siteContainer.classList.add('visible');
-        siteContainer.setAttribute('aria-hidden', 'false');
-      }, 5000);
+    setTimeout(() => {
+      intro.classList.add('hidden');
+      siteContainer.classList.add('visible');
+      siteContainer.setAttribute('aria-hidden', 'false');
+    }, 5000);
 
-      miniLine.addEventListener('click', () => {
-        const expanded = pulldownMenu.classList.toggle('visible');
-        miniLine.classList.toggle('expanded', expanded);
-      });
+    miniLine.addEventListener('click', () => {
+      const expanded = pulldownMenu.classList.toggle('visible');
+      miniLine.classList.toggle('expanded', expanded);
+    });
 
-      miniLine.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          miniLine.click();
-        }
-      });
+    miniLine.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        miniLine.click();
+      }
+    });
 
-      document.addEventListener('click', e => {
-        if (
-          !miniLine.contains(e.target) &&
-          !pulldownMenu.contains(e.target) &&
-          pulldownMenu.classList.contains('visible')
-        ) {
-          pulldownMenu.classList.remove('visible');
-          miniLine.classList.remove('expanded');
-        }
-      });
+    document.addEventListener('click', e => {
+      if (!miniLine.contains(e.target) && !pulldownMenu.contains(e.target) && pulldownMenu.classList.contains('visible')) {
+        pulldownMenu.classList.remove('visible');
+        miniLine.classList.remove('expanded');
+      }
+      if (sidePanel && !sidePanel.contains(e.target) && sidePanelToggle && !sidePanelToggle.contains(e.target) && sidePanel.classList.contains('open')) {
+        sidePanel.classList.remove('open');
+        sidePanel.setAttribute('aria-hidden', 'true');
+      }
+    });
 
-      logo.addEventListener('click', () => {
+    logo.addEventListener('click', () => {
+      body.classList.toggle('white-theme');
+    });
+    logo.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
         body.classList.toggle('white-theme');
-      });
-      logo.addEventListener('keydown', e => {
-        if(e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          body.classList.toggle('white-theme');
-        }
-      });
+      }
+    });
 
-      const bottomNavButtons = document.querySelectorAll('.bottom-nav button');
-      const tabContents = document.querySelectorAll('.tab-content');
-      bottomNavButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-          bottomNavButtons.forEach(b => {
-            b.classList.remove('active');
-            b.removeAttribute('aria-current');
-          });
-          btn.classList.add('active');
-          btn.setAttribute('aria-current', 'page');
-          const targetTab = btn.getAttribute('data-tab');
-          tabContents.forEach(tc => {
-            if(tc.id === targetTab) {
-              tc.classList.add('active');
-            } else {
-              tc.classList.remove('active');
-            }
-          });
+    bottomNavButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        bottomNavButtons.forEach(b => {
+          b.classList.remove('active');
+          b.removeAttribute('aria-current');
         });
-      });
-
-      const modalOverlay = document.getElementById('modalOverlay');
-      const modalTitle = document.getElementById('modalTitle');
-      const modalDesc = document.getElementById('modalDesc');
-      const modalClose = document.getElementById('modalClose');
-
-      document.querySelectorAll('#browseTab ul.content-list li').forEach(item => {
-        item.addEventListener('click', () => {
-          const title = item.getAttribute('data-title');
-          const desc = item.getAttribute('data-description');
-          modalTitle.textContent = title;
-          modalDesc.textContent = desc;
-          modalOverlay.classList.add('active');
-          modalOverlay.focus();
-        });
-        item.addEventListener('keydown', e => {
-          if(e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            item.click();
-          }
-        });
-      });
-
-      modalClose.addEventListener('click', () => {
-        modalOverlay.classList.remove('active');
-      });
-
-      modalOverlay.addEventListener('click', e => {
-        if(e.target === modalOverlay){
-          modalOverlay.classList.remove('active');
-        }
-      });
-
-      document.addEventListener('keydown', e => {
-        if(e.key === 'Escape' && modalOverlay.classList.contains('active')){
-          modalOverlay.classList.remove('active');
-        }
-      });
-
-      document.querySelectorAll('.menu-icon-button').forEach(btn => {
-        btn.addEventListener('click', () => {
-          alert(btn.getAttribute('aria-label') + ' clicked!');
-        });
-        btn.addEventListener('keydown', e => {
-          if(e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            alert(btn.getAttribute('aria-label') + ' clicked!');
+        btn.classList.add('active');
+        btn.setAttribute('aria-current', 'page');
+        const targetTab = btn.getAttribute('data-tab');
+        tabContents.forEach(tc => {
+          if (tc.id === targetTab) {
+            tc.classList.add('active');
+          } else {
+            tc.classList.remove('active');
           }
         });
       });
     });
-  </script>
+
+    document.querySelectorAll('#browseTab ul.content-list li').forEach(item => {
+      item.addEventListener('click', () => {
+        const title = item.getAttribute('data-title');
+        const desc = item.getAttribute('data-description');
+        modalTitle.textContent = title;
+        modalDesc.textContent = desc;
+        modalOverlay.classList.add('active');
+        modalOverlay.focus();
+      });
+      item.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          item.click();
+        }
+      });
+    });
+
+    modalClose.addEventListener('click', () => {
+      modalOverlay.classList.remove('active');
+    });
+
+    modalOverlay.addEventListener('click', e => {
+      if (e.target === modalOverlay) {
+        modalOverlay.classList.remove('active');
+      }
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
+        modalOverlay.classList.remove('active');
+      }
+    });
+
+    document.querySelectorAll('.menu-icon-button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        alert(btn.getAttribute('aria-label') + ' clicked!');
+      });
+      btn.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          alert(btn.getAttribute('aria-label') + ' clicked!');
+        }
+      });
+    });
+
+    sidePanelToggle.addEventListener('click', () => {
+      const open = sidePanel.classList.toggle('open');
+      sidePanel.setAttribute('aria-hidden', !open);
+    });
+    sidePanelToggle.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        sidePanelToggle.click();
+      }
+    });
+    if(sidePanelClose){
+      sidePanelClose.addEventListener('click', () => {
+        sidePanel.classList.remove('open');
+        sidePanel.setAttribute('aria-hidden', 'true');
+      });
+    }
+  });
+</script>
 </body>
 </html>
