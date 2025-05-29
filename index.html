@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Line Theme Navigation - Theme Toggle & Menu Hide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+  :root {
+    --primary-color: #fff;
+    --background-color: #000;
+    --text-color: #fff;
+    --line-color: #ccc;
+    --blue-active: #4a90e2;
+    --bar-background: #111;
+    --bar-border: #333;
+    --shadow-light: rgba(255,255,255,0.05);
+  }
+
+  /* White theme overrides */
+  body.white-theme {
+    --primary-color: #000;
+    --background-color: #fff;
+    --text-color: #111;
+    --line-color: #555;
+    --blue-active: #007bff;
+    --bar-background: #f9f9f9;
+    --bar-border: #ddd;
+    --shadow-light: rgba(0,0,0,0.05);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: var(--background-color);
+    color: var(--text-color);
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    transition: background-color 0.5s, color 0.5s;
+  }
+
+  /* Intro full screen with dynamic background and text color */
+  #intro {
+    position: fixed;
+    inset: 0;
+    background: var(--background-color);
+    color: var(--text-color);
+    font-weight: 600;
+    font-size: 3rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+    z-index: 9999;
+    overflow: hidden;
+    transition: background-color 0.5s, color 0.5s;
+  }
+  #intro.hidden {
+    animation: fadeOut 1s forwards;
+  }
+
+  #intro .typing-text {
+    border-right: 3px solid var(--text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    animation: typing 3s steps(20) forwards, blink 0.8s step-end infinite alternate;
+    max-width: 0;
+    transition: border-color 0.5s;
+  }
+
+  #intro.typing-done .typing-text {
+    border-right: none;
+    animation: none;
+    max-width: 100%;
+  }
+
+  @keyframes typing {
+    to {
+      max-width: 20ch;
+    }
+  }
+
+  @keyframes blink {
+    50% {
+      border-color: transparent;
+    }
+  }
+
+  @keyframes fadeOut {
+    to {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+  }
+
+  /* Container for the full site - hidden by default */
+  #site-container {
+    opacity: 0;
+    visibility: hidden;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    transition: opacity 1s ease;
+  }
+  #site-container.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* Fixed Top bar styling */
+  header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: var(--bar-background);
+    border-bottom: 1px solid var(--bar-border);
+    padding: 0.5rem 1rem;
+    box-shadow: 0 1px 3px var(--shadow-light);
+    user-select: none;
+    z-index: 10000;
+    transition: background-color 0.5s, border-color 0.5s, box-shadow 0.5s;
+  }
+  .topbar-inner {
+    display: flex;
+    flex-direction: column;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* Logo and breadcrumbs row */
+  .topbar-main-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  /* Logo - unique line-style and clickable */
+  .logo {
+    display: flex;
+    align-items: center;
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--primary-color);
+    cursor: pointer;
+    user-select: none;
+    flex-shrink: 0;
+    transition: color 0.5s;
+  }
+  .logo svg {
+    height: 32px;
+    width: 32px;
+    stroke: var(--primary-color);
+    stroke-width: 2;
+    fill: none;
+    margin-right: 0.3rem;
+    transition: stroke 0.5s;
+  }
+  body.white-theme .logo,
+  body.white-theme .logo svg {
+    color: var(--primary-color);
+    stroke: var(--primary-color);
+  }
+
+  /* Breadcrumbs with line style */
+  nav.breadcrumbs {
+    flex: 1;
+    font-size: 0.9rem;
+    color: var(--line-color);
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    transition: color 0.5s;
+  }
+  nav.breadcrumbs a {
+    color: var(--line-color);
+    text-decoration: none;
+    padding: 0 0.4rem;
+    white-space: nowrap;
+    transition: color 0.3s ease;
+    border-bottom: 1px solid transparent;
+  }
+  nav.breadcrumbs a:hover {
+    color: var(--blue-active);
+    border-bottom: 1px solid var(--blue-active);
+  }
+  nav.breadcrumbs span.separator {
+    margin: 0 0.3rem;
+    user-select: none;
+  }
+
+  /* Mini line (hidden when expanded) */
+  .mini-line {
+    border-bottom: 2px solid var(--line-color);
+    margin-top: 0.4rem;
+    padding: 0.25rem 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+    overflow: visible;
+    max-width: 200px;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    cursor: pointer;
+    user-select: none;
+    transition:
+      max-width 0.4s ease,
+      opacity 0.3s ease,
+      visibility 0.3s ease;
+  }
+  .mini-line.hidden {
+    opacity: 0;
+    visibility: hidden;
+    max-width: 0;
+    pointer-events: none;
+  }
+
+  /* Menu toggles container - appears when expanded */
+  .menu-icons {
+    display: none;
+    gap: 20px;
+    margin-left: 1rem;
+    justify-content: center;
+  }
+  .menu-icons.visible {
+    display: flex;
+  }
+
+  .menu-icon-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    color: var(--line-color);
+    transition: color 0.3s ease;
+    font-size: 0.75rem;
+    outline-offset: 2px;
+  }
+  .menu-icon-button svg {
+    stroke: var(--line-color);
+    width: 20px;
+    height: 20px;
+    stroke-width: 2;
+    fill: none;
+    margin-bottom: 2px;
+    transition: stroke 0.3s ease;
+  }
+  .menu-icon-button:hover,
+  .menu-icon-button:focus {
+    color: var(--blue-active);
+    outline: 2px solid var(--blue-active);
+    outline-offset: 3px;
+  }
+
+  /* Bottom navigation bar with transparent background and unique style */
+  footer {
+    background: transparent;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 0.5rem 0 0.7rem; /* padding bottom for dot */
+    z-index: 1000;
+    transition: border-color 0.5s;
+  }
+  body.white-theme footer {
+    border-top-color: rgba(0,0,0,0.12);
+  }
+  .bottom-nav {
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+  .bottom-nav button {
+    background: none;
+    border: none;
+    color: var(--line-color);
+    font-size: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.3s ease;
+    position: relative;
+    padding: 2px 8px 14px; /* extra bottom padding for dot */
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .bottom-nav button svg {
+    stroke: var(--line-color);
+    width: 26px;
+    height: 26px;
+    stroke-width: 1.25;
+    fill: none;
+    transition: stroke 0.3s ease;
+  }
+  /* Icon and text color on hover and focus */
+  .bottom-nav button:hover,
+  .bottom-nav button:focus {
+    color: var(--blue-active);
+    outline: none;
+  }
+  .bottom-nav button:hover svg,
+  .bottom-nav button:focus svg {
+    stroke: var(--blue-active);
+  }
+  /* Active tab styles */
+  .bottom-nav button.active {
+    color: var(--blue-active);
+  }
+  .bottom-nav button.active svg {
+    stroke: var(--blue-active);
+  }
+  /* Blue dot below text label for active tab */
+  .bottom-nav button.active::after {
+    content: '';
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 8px;
+    background-color: var(--blue-active);
+    border-radius: 50%;
+    box-shadow: 0 0 6px var(--blue-active);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  /* Scrollbar for breadcrumbs */
+  nav.breadcrumbs::-webkit-scrollbar {
+    height: 6px;
+  }
+  nav.breadcrumbs::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  nav.breadcrumbs::-webkit-scrollbar-thumb {
+    background-color: var(--blue-active);
+    border-radius: 3px;
+  }
+
+  /* Responsive text and icon scaling */
+  @media (max-width: 480px) {
+    #intro {
+      font-size: 2rem;
+      letter-spacing: 0.05em;
+    }
+    .logo {
+      font-size: 1.1rem;
+    }
+    nav.breadcrumbs {
+      font-size: 0.8rem;
+    }
+    .menu-icon-button svg {
+      width: 18px;
+      height: 18px;
+    }
+    .bottom-nav button {
+      font-size: 0.7rem;
+    }
+    .bottom-nav button svg {
+      width: 22px;
+      height: 22px;
+    }
+  }
+
+  /* Main content placeholder styles with bottom padding to avoid overlap */
+  main {
+    flex: 1;
+    padding: 4.5rem 1rem 5rem; /* top padding for fixed topbar + bottom padding footer */
+    max-width: 1000px;
+    margin: 0 auto;
+    overflow-y: auto;
+    background: var(--background-color);
+    color: var(--text-color);
+    transition: background-color 0.5s, color 0.5s;
+  }
+  body.white-theme main {
+    background: var(--background-color);
+    color: var(--text-color);
+  }
+</style>
+</head>
+<body>
+  <!-- Intro with typing effect -->
+  <section id="intro" aria-label="Introduction">
+    <div class="typing-text" aria-live="polite" aria-atomic="true">Welcome to LineThemed Site</div>
+  </section>
+
+  <!-- Site container initially hidden and fades in after intro -->
+  <div id="site-container" aria-hidden="true">
+    <!-- Fixed Top Bar -->
+    <header role="banner" aria-label="Top Navigation Bar">
+      <div class="topbar-inner">
+        <div class="topbar-main-row">
+          <!-- Logo -->
+          <div class="logo" aria-label="Site Logo" role="button" tabindex="0" title="Toggle Theme">
+            <svg viewBox="0 0 64 64" role="img" aria-hidden="true" focusable="false">
+              <circle cx="32" cy="32" r="30" />
+              <line x1="16" y1="48" x2="48" y2="16" />
+              <line x1="16" y1="16" x2="48" y2="48" />
+            </svg>
+            LineLogo
+          </div>
+          <!-- Breadcrumbs navigation -->
+          <nav class="breadcrumbs" aria-label="Breadcrumb">
+            <a href="#">Home</a><span class="separator">›</span>
+            <a href="#">Section</a><span class="separator">›</span>
+            <a href="#" aria-current="page">Current Page</a>
+          </nav>
+        </div>
+
+        <!-- Mini line (hidden on menu show) -->
+        <div class="mini-line" id="miniLine" role="button" tabindex="0" aria-label="Toggle Menu" aria-pressed="false">
+          <!-- No arrows as requested -->
+          <span>Menu</span>
+        </div>
+
+        <!-- Menu toggles container -->
+        <div class="menu-icons" id="menuIcons" aria-hidden="true" aria-label="Expanded Menu Icons">
+          <div class="menu-icon-button" tabindex="0" role="button" aria-label="Dashboard">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+            </svg>
+            Dash
+          </div>
+          <div class="menu-icon-button" tabindex="0" role="button" aria-label="Settings">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l0 0a2 2 0 0 1-2.83 2.83l0 0a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v0a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l0 0a2 2 0 0 1-2.83-2.83l0 0a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h0a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l0 0a2 2 0 0 1 2.83-2.83l0 0a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v0a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l0 0a2 2 0 0 1 2.83 2.83l0 0a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h0a1.65 1.65 0 0 0-1.6 1z"/>
+            </svg>
+            Set
+          </div>
+          <div class="menu-icon-button" tabindex="0" role="button" aria-label="Profile">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="7" r="4" />
+              <path d="M5.5 21a7.5 7.5 0 0 1 13 0" />
+            </svg>
+            Profile
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main content placeholder -->
+    <main>
+      <h1>Page Content</h1>
+      <p>This is a placeholder for the main page content.</p>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae suscipit nulla. Donec et tortor ut sapien sollicitudin efficitur. Integer a ipsum sit amet libero porttitor hendrerit. Nullam et nulla eget ipsum consequat faucibus. Suspendisse potenti. Duis et ullamcorper elit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Cras nec mattis erat, sit amet varius velit.</p>
+      <p>Scroll content to test fixed top and bottom bars.</p>
+      <p style="margin-top: 400px;">End of content.</p>
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <footer role="contentinfo" aria-label="Bottom Navigation Bar">
+      <nav class="bottom-nav" aria-label="Primary">
+        <button type="button" aria-current="page" class="active" aria-label="Home">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M3 12 L12 3 L21 12 L21 21 L3 21 Z" />
+          </svg>
+          Home
+        </button>
+        <button type="button" aria-label="Browse">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="11" cy="11" r="7" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          Browse
+        </button>
+        <button type="button" aria-label="Notification">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M12 22c1.1 0 1.99-.9 1.99-2H10c0 1.1.9 2 2 2zM18 16v-5c0-3.07-1.63-5.64-4.5-6.32V4a1.5 1.5 0 0 0-3 0v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+          </svg>
+          Notification
+        </button>
+      </nav>
+    </footer>
+  </div>
+
+<script>
+  // Typing animation control and intro hiding
+  document.addEventListener('DOMContentLoaded', () => {
+    const intro = document.getElementById('intro');
+    const siteContainer = document.getElementById('site-container');
+    const miniLine = document.getElementById('miniLine');
+    const menuIcons = document.getElementById('menuIcons');
+    const logo = document.querySelector('.logo');
+    const body = document.body;
+
+    // After typing anim completes at 3s, mark done to remove blinking cursor
+    setTimeout(() => {
+      intro.querySelector('.typing-text').classList.add('typing-done');
+    }, 3100);
+
+    // After 5s total, fade out intro and fade in site
+    setTimeout(() => {
+      intro.classList.add('hidden');
+      siteContainer.classList.add('visible');
+      siteContainer.setAttribute('aria-hidden', 'false');
+    }, 5000);
+
+    // Mini line click: show menu icons and hide mini line
+    miniLine.addEventListener('click', () => {
+      menuIcons.classList.add('visible');
+      miniLine.classList.add('hidden');
+      miniLine.setAttribute('aria-pressed', 'true');
+      menuIcons.setAttribute('aria-hidden', 'false');
+    });
+
+    miniLine.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        miniLine.click();
+      }
+    });
+
+    // Allow closing menu icons by clicking anywhere outside the menu icons (optional UX)
+    document.addEventListener('click', (e) => {
+      if (
+        menuIcons.classList.contains('visible') &&
+        !menuIcons.contains(e.target) &&
+        !miniLine.contains(e.target)
+      ) {
+        menuIcons.classList.remove('visible');
+        miniLine.classList.remove('hidden');
+        miniLine.setAttribute('aria-pressed', 'false');
+        menuIcons.setAttribute('aria-hidden', 'true');
+      }
+    });
+
+    // Logo click: toggle white/dark theme
+    logo.addEventListener('click', toggleTheme);
+    logo.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleTheme();
+      }
+    });
+
+    function toggleTheme() {
+      body.classList.toggle('white-theme');
+    }
+
+    // Bottom nav active state toggle
+    const bottomNavButtons = document.querySelectorAll('.bottom-nav button');
+    bottomNavButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        bottomNavButtons.forEach(b => {
+          b.classList.remove('active');
+          b.removeAttribute('aria-current');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-current', 'page');
+      });
+    });
+
+    // Accessibility for menu-icon-buttons
+    const menuButtons = menuIcons.querySelectorAll('.menu-icon-button');
+    menuButtons.forEach(menuBtn => {
+      menuBtn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          alert(menuBtn.getAttribute('aria-label') + ' clicked!');
+        }
+      });
+      menuBtn.addEventListener('click', () => {
+        alert(menuBtn.getAttribute('aria-label') + ' clicked!');
+      });
+    });
+  });
+</script>
+</body>
+</html>
