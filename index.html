@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Line Theme Navigation - Theme Toggle & Menu Hide</title>
+<title>Line Theme Navigation - Multi Tab Dashboard with Modal</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
@@ -11,14 +11,16 @@
     --primary-color: #fff;
     --background-color: #000;
     --text-color: #fff;
-    --line-color: #ccc;
+    --line-color: #777;
     --blue-active: #4a90e2;
     --bar-background: #111;
-    --bar-border: #333;
-    --shadow-light: rgba(255,255,255,0.05);
+    --bar-border: #444;
+    --shadow-light: rgba(255,255,255,0.06);
+
+    --menu-bg: rgba(255, 255, 255, 0.05);
+    --menu-hover-bg: rgba(74, 144, 226, 0.1);
   }
 
-  /* White theme overrides */
   body.white-theme {
     --primary-color: #000;
     --background-color: #fff;
@@ -26,8 +28,11 @@
     --line-color: #555;
     --blue-active: #007bff;
     --bar-background: #f9f9f9;
-    --bar-border: #ddd;
+    --bar-border: #ccc;
     --shadow-light: rgba(0,0,0,0.05);
+
+    --menu-bg: rgba(0, 0, 0, 0.05);
+    --menu-hover-bg: rgba(0, 123, 255, 0.07);
   }
 
   * {
@@ -46,7 +51,6 @@
     transition: background-color 0.5s, color 0.5s;
   }
 
-  /* Intro full screen with dynamic background and text color */
   #intro {
     position: fixed;
     inset: 0;
@@ -67,7 +71,6 @@
   #intro.hidden {
     animation: fadeOut 1s forwards;
   }
-
   #intro .typing-text {
     border-right: 3px solid var(--text-color);
     white-space: nowrap;
@@ -76,34 +79,20 @@
     max-width: 0;
     transition: border-color 0.5s;
   }
-
   #intro.typing-done .typing-text {
     border-right: none;
     animation: none;
     max-width: 100%;
   }
-
   @keyframes typing {
-    to {
-      max-width: 20ch;
-    }
+    to { max-width: 20ch; }
   }
-
   @keyframes blink {
-    50% {
-      border-color: transparent;
-    }
+    50% { border-color: transparent; }
   }
-
   @keyframes fadeOut {
-    to {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
+    to { opacity: 0; visibility: hidden; pointer-events: none; }
   }
-
-  /* Container for the full site - hidden by default */
   #site-container {
     opacity: 0;
     visibility: hidden;
@@ -116,79 +105,48 @@
     opacity: 1;
     visibility: visible;
   }
-
-  /* Fixed Top bar styling */
   header {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; left: 0; right: 0;
     background: var(--bar-background);
     border-bottom: 1px solid var(--bar-border);
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 1rem 0.6rem;
     box-shadow: 0 1px 3px var(--shadow-light);
     user-select: none;
     z-index: 10000;
     transition: background-color 0.5s, border-color 0.5s, box-shadow 0.5s;
   }
   .topbar-inner {
-    display: flex;
-    flex-direction: column;
-    max-width: 1200px;
-    margin: 0 auto;
+    display: flex; flex-direction: column; max-width: 1200px; margin: 0 auto;
   }
-
-  /* Logo and breadcrumbs row */
   .topbar-main-row {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+    display: flex; align-items: center; gap: 1rem;
   }
-
-  /* Logo - unique line-style and clickable */
   .logo {
-    display: flex;
-    align-items: center;
-    font-weight: 700;
-    font-size: 1.4rem;
-    color: var(--primary-color);
-    cursor: pointer;
-    user-select: none;
-    flex-shrink: 0;
-    transition: color 0.5s;
+    display: flex; align-items: center;
+    font-weight: 700; font-size: 1.4rem;
+    color: var(--primary-color); cursor: pointer; user-select: none;
+    flex-shrink: 0; transition: color 0.5s;
   }
   .logo svg {
-    height: 32px;
-    width: 32px;
+    height: 32px; width: 32px;
     stroke: var(--primary-color);
-    stroke-width: 2;
-    fill: none;
-    margin-right: 0.3rem;
-    transition: stroke 0.5s;
+    stroke-width: 2; fill: none;
+    margin-right: 0.3rem; transition: stroke 0.5s;
   }
-  body.white-theme .logo,
-  body.white-theme .logo svg {
+  body.white-theme .logo, body.white-theme .logo svg {
     color: var(--primary-color);
     stroke: var(--primary-color);
   }
-
-  /* Breadcrumbs with line style */
   nav.breadcrumbs {
-    flex: 1;
-    font-size: 0.9rem;
-    color: var(--line-color);
-    display: flex;
-    align-items: center;
-    flex-wrap: nowrap;
-    overflow-x: auto;
+    flex: 1; font-size: 0.9rem; color: var(--line-color);
+    display: flex; align-items: center; flex-wrap: nowrap; overflow-x: auto;
     transition: color 0.5s;
   }
   nav.breadcrumbs a {
     color: var(--line-color);
-    text-decoration: none;
-    padding: 0 0.4rem;
-    white-space: nowrap;
-    transition: color 0.3s ease;
+    text-decoration: none; padding: 0 0.4rem;
+    white-space: nowrap; transition: color 0.3s ease;
     border-bottom: 1px solid transparent;
   }
   nav.breadcrumbs a:hover {
@@ -196,104 +154,96 @@
     border-bottom: 1px solid var(--blue-active);
   }
   nav.breadcrumbs span.separator {
-    margin: 0 0.3rem;
-    user-select: none;
+    margin: 0 0.3rem; user-select: none;
   }
-
-  /* Mini line (hidden when expanded) */
-  .mini-line {
-    border-bottom: 2px solid var(--line-color);
-    margin-top: 0.4rem;
-    padding: 0.25rem 0;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    position: relative;
-    overflow: visible;
-    max-width: 200px;
-    justify-content: center;
-    margin-left: auto;
-    margin-right: auto;
-    cursor: pointer;
-    user-select: none;
-    transition:
-      max-width 0.4s ease,
-      opacity 0.3s ease,
-      visibility 0.3s ease;
+  .pull-line {
+    position: fixed; top: 61px; left: 50%; transform: translateX(-50%);
+    width: 60px; height: 4px; border-radius: 3px;
+    background-color: var(--line-color);
+    cursor: pointer; user-select: none; z-index: 10001;
+    transition: background-color 0.3s ease;
   }
-  .mini-line.hidden {
-    opacity: 0;
-    visibility: hidden;
-    max-width: 0;
-    pointer-events: none;
+  .pull-line.active {
+    background-color: var(--blue-active);
   }
-
-  /* Menu toggles container - appears when expanded */
-  .menu-icons {
-    display: none;
-    gap: 20px;
-    margin-left: 1rem;
-    justify-content: center;
+  .pull-line::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(0deg);
+    border: solid var(--line-color);
+    border-width: 0 2px 2px 0;
+    display: inline-block; padding: 6px;
+    transition: transform 0.3s ease, border-color 0.3s ease;
   }
-  .menu-icons.visible {
-    display: flex;
+  .pull-line.active::after {
+    transform: translate(-50%, -50%) rotate(180deg);
+    border-color: var(--blue-active);
   }
-
+  .pulldown-menu {
+    position: fixed; top: 65px; left: 50%; transform: translateX(-50%);
+    width: fit-content; padding: 12px 20px;
+    background-color: var(--bar-background);
+    border: 1px solid var(--bar-border);
+    border-radius: 12px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    opacity: 0; pointer-events: none; max-height: 0; overflow: hidden;
+    transition: max-height 0.4s ease, opacity 0.4s ease, padding 0.4s ease;
+    display: flex; gap: 24px; z-index: 10001;
+  }
+  .pulldown-menu.open {
+    pointer-events: auto; opacity: 1; max-height: 220px; padding: 12px 20px;
+  }
   .menu-icon-button {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    cursor: pointer;
-    user-select: none;
+    background: transparent;
+    display: flex; flex-direction: column; align-items: center;
     color: var(--line-color);
-    transition: color 0.3s ease;
-    font-size: 0.75rem;
-    outline-offset: 2px;
+    cursor: pointer;
+    font-size: 0.85rem; font-weight: 600;
+    transition: color 0.3s ease; user-select: none;
+    width: 84px;
   }
   .menu-icon-button svg {
     stroke: var(--line-color);
-    width: 20px;
-    height: 20px;
-    stroke-width: 2;
-    fill: none;
-    margin-bottom: 2px;
+    width: 28px; height: 28px; stroke-width: 2; fill: none;
+    margin-bottom: 6px;
     transition: stroke 0.3s ease;
   }
-  .menu-icon-button:hover,
-  .menu-icon-button:focus {
+  .menu-icon-button:hover, .menu-icon-button:focus {
     color: var(--blue-active);
-    outline: 2px solid var(--blue-active);
-    outline-offset: 3px;
+    outline: none;
   }
-
-  /* Bottom navigation bar with transparent background and unique style */
+  .menu-icon-button:hover svg, .menu-icon-button:focus svg {
+    stroke: var(--blue-active);
+  }
+  .menu-icon-button span {
+    user-select: none;
+  }
   footer {
     background: transparent;
-    border-top: 1px solid rgba(255,255,255,0.12);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    padding: 0.5rem 0 0.7rem; /* padding bottom for dot */
-    z-index: 1000;
-    transition: border-color 0.5s;
-  }
-  body.white-theme footer {
-    border-top-color: rgba(0,0,0,0.12);
+    position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%);
+    padding: 6px 36px;
+    z-index: 1000; width: auto;
+    user-select: none;
   }
   .bottom-nav {
-    max-width: 600px;
-    margin: 0 auto;
+    background: var(--bar-background);
+    backdrop-filter: saturate(180%) blur(18px);
+    -webkit-backdrop-filter: saturate(180%) blur(18px);
+    border-radius: 36px;
+    padding: 8px 40px;
+    box-shadow: 0 6px 22px rgba(0,0,0,0.22);
     display: flex;
-    justify-content: space-around;
+    gap: 48px;
     align-items: center;
+    justify-content: center;
   }
   .bottom-nav button {
-    background: none;
-    border: none;
+    background: none; border: none;
     color: var(--line-color);
-    font-size: 0.75rem;
+    font-size: 0.78rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -302,51 +252,47 @@
     user-select: none;
     transition: color 0.3s ease;
     position: relative;
-    padding: 2px 8px 14px; /* extra bottom padding for dot */
     font-weight: 600;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.025em;
+    padding: 0;
+    outline-offset: 2px;
   }
   .bottom-nav button svg {
     stroke: var(--line-color);
-    width: 26px;
-    height: 26px;
-    stroke-width: 1.25;
+    width: 28px;
+    height: 28px;
+    stroke-width: 1.3;
     fill: none;
-    transition: stroke 0.3s ease;
+    transition: stroke 0.25s ease, transform 0.25s ease;
   }
-  /* Icon and text color on hover and focus */
-  .bottom-nav button:hover,
-  .bottom-nav button:focus {
+  .bottom-nav button:hover, .bottom-nav button:focus {
     color: var(--blue-active);
-    outline: none;
+    outline: 1.8px solid var(--blue-active);
+    outline-offset: 3px;
+    border-radius: 10px;
   }
-  .bottom-nav button:hover svg,
-  .bottom-nav button:focus svg {
+  .bottom-nav button:hover svg, .bottom-nav button:focus svg {
     stroke: var(--blue-active);
+    transform: scale(1.1);
   }
-  /* Active tab styles */
   .bottom-nav button.active {
     color: var(--blue-active);
   }
   .bottom-nav button.active svg {
     stroke: var(--blue-active);
+    transform: scale(1.15);
   }
-  /* Blue dot below text label for active tab */
   .bottom-nav button.active::after {
     content: '';
     position: absolute;
-    bottom: 6px;
+    bottom: -5px;
     left: 50%;
     transform: translateX(-50%);
     width: 8px;
     height: 8px;
     background-color: var(--blue-active);
     border-radius: 50%;
-    box-shadow: 0 0 6px var(--blue-active);
-    transition: opacity 0.3s ease, transform 0.3s ease;
   }
-
-  /* Scrollbar for breadcrumbs */
   nav.breadcrumbs::-webkit-scrollbar {
     height: 6px;
   }
@@ -357,37 +303,20 @@
     background-color: var(--blue-active);
     border-radius: 3px;
   }
-
-  /* Responsive text and icon scaling */
   @media (max-width: 480px) {
-    #intro {
-      font-size: 2rem;
-      letter-spacing: 0.05em;
-    }
-    .logo {
-      font-size: 1.1rem;
-    }
-    nav.breadcrumbs {
-      font-size: 0.8rem;
-    }
-    .menu-icon-button svg {
-      width: 18px;
-      height: 18px;
-    }
-    .bottom-nav button {
-      font-size: 0.7rem;
-    }
-    .bottom-nav button svg {
-      width: 22px;
-      height: 22px;
-    }
+    #intro { font-size: 2rem; letter-spacing: 0.05em; }
+    .logo { font-size: 1.1rem; }
+    nav.breadcrumbs { font-size: 0.8rem; }
+    .menu-icon-button { width: 70px; font-size: 0.78rem; }
+    .menu-icon-button svg { width: 22px; height: 22px; }
+    .bottom-nav button { font-size: 0.68rem; gap: 3px; }
+    .bottom-nav button svg { width: 24px; height: 24px; }
+    footer { bottom: 12px; padding: 6px 24px; }
   }
-
-  /* Main content placeholder styles with bottom padding to avoid overlap */
   main {
     flex: 1;
-    padding: 4.5rem 1rem 5rem; /* top padding for fixed topbar + bottom padding footer */
-    max-width: 1000px;
+    padding: 4.8rem 2rem 6.5rem; /* Add space for fixed header/footer */
+    max-width: 1200px;
     margin: 0 auto;
     overflow-y: auto;
     background: var(--background-color);
@@ -398,21 +327,164 @@
     background: var(--background-color);
     color: var(--text-color);
   }
+
+  /* Content Sections for tabs */
+  .tab-content {
+    display: none;
+    animation: fadeIn 0.4s ease forwards;
+  }
+  .tab-content.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
+
+  /* Home tab styling - compact dashboard */
+  #homeTab .dashboard-widgets {
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+  }
+  #homeTab .widget {
+    flex: 1 1 260px;
+    border-bottom: 1px solid var(--line-color);
+    padding-bottom: 14px;
+    color: var(--line-color);
+  }
+  #homeTab .widget h3 {
+    color: var(--primary-color);
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  #homeTab .widget p {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+
+  /* Browse tab styling - list with clickable items */
+  #browseTab ul.content-list {
+    max-width: 800px;
+    margin: 0 auto;
+    list-style: none;
+    padding: 0;
+  }
+  #browseTab ul.content-list li {
+    border-bottom: 1px solid var(--line-color);
+    padding: 14px 12px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  #browseTab ul.content-list li:hover,
+  #browseTab ul.content-list li:focus {
+    background-color: var(--menu-hover-bg);
+    outline: none;
+  }
+  #browseTab ul.content-list li:last-child {
+    border-bottom: none;
+  }
+  #browseTab ul.content-list li h4 {
+    margin: 0 0 4px 0;
+    font-weight: 700;
+    color: var(--primary-color);
+  }
+  #browseTab ul.content-list li p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--line-color);
+  }
+
+  /* Notifications tab styling */
+  #notificationsTab .notifs-list {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  #notificationsTab .notif-item {
+    border: 1px solid var(--line-color);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 14px;
+    color: var(--line-color);
+    background: var(--bar-background);
+    transition: background-color 0.3s, border-color 0.3s;
+  }
+  #notificationsTab .notif-item:hover,
+  #notificationsTab .notif-item:focus {
+    background-color: var(--menu-hover-bg);
+    border-color: var(--blue-active);
+    outline: none;
+  }
+  #notificationsTab .notif-item h4 {
+    margin: 0 0 6px 0;
+    font-weight: 700;
+    color: var(--primary-color);
+  }
+  #notificationsTab .notif-item p {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+
+  /* Modal styles */
+  #modalOverlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0,0,0,0.75);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 12000;
+  }
+  #modalOverlay.active {
+    display: flex;
+  }
+  #modalContent {
+    background-color: var(--bar-background);
+    border-radius: 14px;
+    max-width: 600px;
+    max-height: 80vh;
+    width: 90%;
+    padding: 24px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.8);
+    color: var(--primary-color);
+    overflow-y: auto;
+    position: relative;
+  }
+  #modalClose {
+    position: absolute;
+    top: 16px;
+    right: 22px;
+    background: none;
+    border: none;
+    color: var(--line-color);
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  #modalClose:hover, #modalClose:focus {
+    color: var(--blue-active);
+    outline: none;
+  }
+  #modalContent h3 {
+    margin-top: 0;
+  }
+  #modalContent p {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--line-color);
+  }
 </style>
 </head>
 <body>
-  <!-- Intro with typing effect -->
   <section id="intro" aria-label="Introduction">
-    <div class="typing-text" aria-live="polite" aria-atomic="true">Welcome to LineThemed Site</div>
+    <div class="typing-text" aria-live="polite" aria-atomic="true">Welcome to Study Dashboard</div>
   </section>
-
-  <!-- Site container initially hidden and fades in after intro -->
   <div id="site-container" aria-hidden="true">
-    <!-- Fixed Top Bar -->
     <header role="banner" aria-label="Top Navigation Bar">
-      <div class="topbar-inner">
+      <div class="topbar-inner" style="position: relative;">
         <div class="topbar-main-row">
-          <!-- Logo -->
           <div class="logo" aria-label="Site Logo" role="button" tabindex="0" title="Toggle Theme">
             <svg viewBox="0 0 64 64" role="img" aria-hidden="true" focusable="false">
               <circle cx="32" cy="32" r="30" />
@@ -421,75 +493,115 @@
             </svg>
             LineLogo
           </div>
-          <!-- Breadcrumbs navigation -->
           <nav class="breadcrumbs" aria-label="Breadcrumb">
             <a href="#">Home</a><span class="separator">›</span>
-            <a href="#">Section</a><span class="separator">›</span>
-            <a href="#" aria-current="page">Current Page</a>
+            <a href="#">Resources</a><span class="separator">›</span>
+            <a href="#" aria-current="page">Dashboard</a>
           </nav>
         </div>
-
-        <!-- Mini line (hidden on menu show) -->
-        <div class="mini-line" id="miniLine" role="button" tabindex="0" aria-label="Toggle Menu" aria-pressed="false">
-          <!-- No arrows as requested -->
-          <span>Menu</span>
-        </div>
-
-        <!-- Menu toggles container -->
-        <div class="menu-icons" id="menuIcons" aria-hidden="true" aria-label="Expanded Menu Icons">
-          <div class="menu-icon-button" tabindex="0" role="button" aria-label="Dashboard">
+        <div class="pull-line" id="pullLine" role="button" tabindex="0" aria-label="Toggle Menu" aria-pressed="false"></div>
+        <div class="pulldown-menu" id="pulldownMenu" aria-label="Expanded Menu" aria-hidden="true">
+          <div class="menu-icon-button" tabindex="0" role="button" aria-label="Previous Year Questions Books">
             <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <rect x="3" y="3" width="7" height="7" />
-              <rect x="14" y="3" width="7" height="7" />
-              <rect x="14" y="14" width="7" height="7" />
-              <rect x="3" y="14" width="7" height="7" />
+              <path d="M4 6h16M4 12h16M4 18h16"/>
+              <rect x="2" y="4" width="20" height="16" rx="2" ry="2" />
             </svg>
-            Dash
+            <span>PYQ Books</span>
           </div>
-          <div class="menu-icon-button" tabindex="0" role="button" aria-label="Settings">
+          <div class="menu-icon-button" tabindex="0" role="button" aria-label="Upcoming Exams">
             <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <circle cx="12" cy="12" r="3" />
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l0 0a2 2 0 0 1-2.83 2.83l0 0a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v0a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l0 0a2 2 0 0 1-2.83-2.83l0 0a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h0a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l0 0a2 2 0 0 1 2.83-2.83l0 0a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v0a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l0 0a2 2 0 0 1 2.83 2.83l0 0a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h0a1.65 1.65 0 0 0-1.6 1z"/>
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+              <line x1="12" y1="6" x2="12" y2="12" stroke="currentColor" stroke-width="2" />
+              <line x1="12" y1="12" x2="16" y2="14" stroke="currentColor" stroke-width="2" />
             </svg>
-            Set
+            <span>Exams</span>
           </div>
-          <div class="menu-icon-button" tabindex="0" role="button" aria-label="Profile">
+          <div class="menu-icon-button" tabindex="0" role="button" aria-label="Study Materials">
             <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <circle cx="12" cy="7" r="4" />
-              <path d="M5.5 21a7.5 7.5 0 0 1 13 0" />
+              <rect x="4" y="4" width="16" height="16" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M8 8h8v8H8z" stroke="currentColor" stroke-width="2" fill="none"/>
             </svg>
-            Profile
+            <span>Materials</span>
           </div>
         </div>
       </div>
     </header>
-
-    <!-- Main content placeholder -->
     <main>
-      <h1>Page Content</h1>
-      <p>This is a placeholder for the main page content.</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae suscipit nulla. Donec et tortor ut sapien sollicitudin efficitur. Integer a ipsum sit amet libero porttitor hendrerit. Nullam et nulla eget ipsum consequat faucibus. Suspendisse potenti. Duis et ullamcorper elit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Cras nec mattis erat, sit amet varius velit.</p>
-      <p>Scroll content to test fixed top and bottom bars.</p>
-      <p style="margin-top: 400px;">End of content.</p>
-    </main>
+      <!-- Home Content -->
+      <section class="tab-content active" id="homeTab" aria-label="Home Dashboard">
+        <div class="dashboard-widgets">
+          <div class="widget" tabindex="0" aria-label="Quick Stats">
+            <h3>Quick Stats</h3>
+            <p>Users: <strong>12,845</strong></p>
+            <p>Exams Taken: <strong>5,234</strong></p>
+          </div>
+          <div class="widget" tabindex="0" aria-label="Recent Activities">
+            <h3>Recent Activities</h3>
+            <p>New study materials added, upcoming exam registration now open.</p>
+          </div>
+          <div class="widget" tabindex="0" aria-label="Tips">
+            <h3>Study Tips</h3>
+            <p>Practice past year papers to boost exam confidence.</p>
+          </div>
+        </div>
+      </section>
 
-    <!-- Bottom Navigation Bar -->
+      <!-- Browse Content -->
+      <section class="tab-content" id="browseTab" aria-label="Browse Resources">
+        <ul class="content-list" tabindex="0" role="list" aria-label="Browse topics list">
+          <li tabindex="0" role="button" data-title="Mathematics PYQ Book" data-description="Contains previous year questions for Mathematics with detailed solutions spanning from 2010 to 2023."> 
+            <h4>Mathematics PYQ Book</h4>
+            <p>Previous year questions for Mathematics with answers.</p>
+          </li>
+          <li tabindex="0" role="button" data-title="Physics PYQ Book" data-description="Compilation of Physics past exams questions and solutions from 2012 to 2023.">
+            <h4>Physics PYQ Book</h4>
+            <p>Comprehensive list of Physics past year questions.</p>
+          </li>
+          <li tabindex="0" role="button" data-title="NEET Exam Guide" data-description="Detailed guide on exam pattern, syllabus, and important topics for NEET examination.">
+            <h4>NEET Exam Guide</h4>
+            <p>Preparation guide with important exam details.</p>
+          </li>
+          <li tabindex="0" role="button" data-title="Calculus Video Series" data-description="Lecture videos focused on calculus concepts with exercises and examples.">
+            <h4>Calculus Video Series</h4>
+            <p>Interactive video lectures for Calculus study.</p>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Notifications Content -->
+      <section class="tab-content" id="notificationsTab" aria-label="Notifications">
+        <div class="notifs-list">
+          <article class="notif-item" tabindex="0" role="article" aria-label="Exam date announced notification">
+            <h4>JEE Main 2024 Date Announced</h4>
+            <p>The JEE Main examination is scheduled for August 15, 2024. Register before July 15th.</p>
+          </article>
+          <article class="notif-item" tabindex="0" role="article" aria-label="New study materials notification">
+            <h4>New Materials Added</h4>
+            <p>New study guides and practice papers for Chemistry and Biology have been added.</p>
+          </article>
+          <article class="notif-item" tabindex="0" role="article" aria-label="Website maintenance scheduled">
+            <h4>Scheduled Maintenance</h4>
+            <p>The platform will be undergoing scheduled maintenance on July 10th, 2 AM to 4 AM UTC.</p>
+          </article>
+        </div>
+      </section>
+    </main>
     <footer role="contentinfo" aria-label="Bottom Navigation Bar">
       <nav class="bottom-nav" aria-label="Primary">
-        <button type="button" aria-current="page" class="active" aria-label="Home">
+        <button type="button" aria-current="page" class="active" aria-label="Home" data-tab="homeTab">
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
             <path d="M3 12 L12 3 L21 12 L21 21 L3 21 Z" />
           </svg>
           Home
         </button>
-        <button type="button" aria-label="Browse">
+        <button type="button" aria-label="Browse" data-tab="browseTab">
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
             <circle cx="11" cy="11" r="7" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
           Browse
         </button>
-        <button type="button" aria-label="Notification">
+        <button type="button" aria-label="Notification" data-tab="notificationsTab">
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
             <path d="M12 22c1.1 0 1.99-.9 1.99-2H10c0 1.1.9 2 2 2zM18 16v-5c0-3.07-1.63-5.64-4.5-6.32V4a1.5 1.5 0 0 0-3 0v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
           </svg>
@@ -498,73 +610,71 @@
       </nav>
     </footer>
   </div>
+<!-- Modal Structure -->
+  <div id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDesc" tabindex="-1">
+    <div id="modalContent">
+      <button id="modalClose" aria-label="Close modal">&times;</button>
+      <h3 id="modalTitle"></h3>
+      <p id="modalDesc"></p>
+    </div>
+  </div>
 
 <script>
-  // Typing animation control and intro hiding
   document.addEventListener('DOMContentLoaded', () => {
     const intro = document.getElementById('intro');
     const siteContainer = document.getElementById('site-container');
-    const miniLine = document.getElementById('miniLine');
-    const menuIcons = document.getElementById('menuIcons');
+    const pullLine = document.getElementById('pullLine');
+    const menu = document.getElementById('pulldownMenu');
     const logo = document.querySelector('.logo');
     const body = document.body;
 
-    // After typing anim completes at 3s, mark done to remove blinking cursor
     setTimeout(() => {
       intro.querySelector('.typing-text').classList.add('typing-done');
     }, 3100);
 
-    // After 5s total, fade out intro and fade in site
     setTimeout(() => {
       intro.classList.add('hidden');
       siteContainer.classList.add('visible');
       siteContainer.setAttribute('aria-hidden', 'false');
     }, 5000);
 
-    // Mini line click: show menu icons and hide mini line
-    miniLine.addEventListener('click', () => {
-      menuIcons.classList.add('visible');
-      miniLine.classList.add('hidden');
-      miniLine.setAttribute('aria-pressed', 'true');
-      menuIcons.setAttribute('aria-hidden', 'false');
+    pullLine.addEventListener('click', () => {
+      const isOpen = menu.classList.toggle('open');
+      pullLine.classList.toggle('active', isOpen);
+      menu.setAttribute('aria-hidden', !isOpen);
     });
-
-    miniLine.addEventListener('keydown', (e) => {
+    pullLine.addEventListener('keydown', e => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        miniLine.click();
+        pullLine.click();
       }
     });
 
-    // Allow closing menu icons by clicking anywhere outside the menu icons (optional UX)
-    document.addEventListener('click', (e) => {
+    document.addEventListener('click', e => {
       if (
-        menuIcons.classList.contains('visible') &&
-        !menuIcons.contains(e.target) &&
-        !miniLine.contains(e.target)
+        !pullLine.contains(e.target) &&
+        !menu.contains(e.target) &&
+        menu.classList.contains('open')
       ) {
-        menuIcons.classList.remove('visible');
-        miniLine.classList.remove('hidden');
-        miniLine.setAttribute('aria-pressed', 'false');
-        menuIcons.setAttribute('aria-hidden', 'true');
+        menu.classList.remove('open');
+        pullLine.classList.remove('active');
+        menu.setAttribute('aria-hidden', 'true');
       }
     });
 
-    // Logo click: toggle white/dark theme
-    logo.addEventListener('click', toggleTheme);
-    logo.addEventListener('keydown', (e) => {
+    logo.addEventListener('click', () => {
+      body.classList.toggle('white-theme');
+    });
+    logo.addEventListener('keydown', e => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        toggleTheme();
+        body.classList.toggle('white-theme');
       }
     });
 
-    function toggleTheme() {
-      body.classList.toggle('white-theme');
-    }
-
-    // Bottom nav active state toggle
+    // Tab switching
     const bottomNavButtons = document.querySelectorAll('.bottom-nav button');
+    const tabContents = document.querySelectorAll('.tab-content');
     bottomNavButtons.forEach(btn => {
       btn.addEventListener('click', () => {
         bottomNavButtons.forEach(b => {
@@ -573,20 +683,66 @@
         });
         btn.classList.add('active');
         btn.setAttribute('aria-current', 'page');
+        const targetTab = btn.getAttribute('data-tab');
+        tabContents.forEach(tc => {
+          if(tc.id === targetTab) {
+            tc.classList.add('active');
+          } else {
+            tc.classList.remove('active');
+          }
+        });
       });
     });
 
-    // Accessibility for menu-icon-buttons
-    const menuButtons = menuIcons.querySelectorAll('.menu-icon-button');
-    menuButtons.forEach(menuBtn => {
-      menuBtn.addEventListener('keydown', (e) => {
+    // Modal handling for browse items
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDesc = document.getElementById('modalDesc');
+    const modalClose = document.getElementById('modalClose');
+
+    document.querySelectorAll('#browseTab ul.content-list li').forEach(item => {
+      item.addEventListener('click', () => {
+        const title = item.getAttribute('data-title');
+        const desc = item.getAttribute('data-description');
+        modalTitle.textContent = title;
+        modalDesc.textContent = desc;
+        modalOverlay.classList.add('active');
+        modalOverlay.focus();
+      });
+      item.addEventListener('keydown', e => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          alert(menuBtn.getAttribute('aria-label') + ' clicked!');
+          item.click();
         }
       });
-      menuBtn.addEventListener('click', () => {
-        alert(menuBtn.getAttribute('aria-label') + ' clicked!');
+    });
+
+    modalClose.addEventListener('click', () => {
+      modalOverlay.classList.remove('active');
+    });
+
+    modalOverlay.addEventListener('click', e => {
+      if(e.target === modalOverlay){
+        modalOverlay.classList.remove('active');
+      }
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
+        modalOverlay.classList.remove('active');
+      }
+    });
+
+    // Accessibility on menu icons
+    document.querySelectorAll('.menu-icon-button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        alert(btn.getAttribute('aria-label') + ' clicked!');
+      });
+      btn.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          alert(btn.getAttribute('aria-label') + ' clicked!');
+        }
       });
     });
   });
